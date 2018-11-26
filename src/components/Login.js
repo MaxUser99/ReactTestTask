@@ -18,16 +18,35 @@ class _Login extends React.Component {
   };
 
   onFacebookLogin = (loginStatus, resultObject) => {
-    if (loginStatus === true) {
+    const { isLogined, history } = this.props;
+    console.log(isLogined);
+    // if (isLogined) {
+    // }
+    if (loginStatus === true && !isLogined) {
+      console.log("autenticate");
       const { autenticate } = this.props;
       autenticate({ login: resultObject.user.name, password: "" });
+      history.push("/main");
     }
     // else {
     //   alert('Facebook login error, status: ' + loginStatus);
     // }
   };
 
+  // componentDidMount() {
+  //   const { isLogined, history } = this.props;
+  //   if (isLogined) {
+  //     console.log("Redirect to main");
+  //     history.push("/main");
+  //   }
+  // }
+
   render() {
+    // const { isLogined, history } = this.props;
+    // if (isLogined) {
+    //   console.log("Redirect to main");
+    //   history.push("/main");
+    // }
     const { login, password } = this.state;
     return (
       <div className="d-flex justify-content-center align-items-center jumbotron">
@@ -69,7 +88,10 @@ const mapDispatcherToProps = dispatch => ({
   autenticate: credentials => dispatch(authenticate(credentials))
 });
 
+const mapStateToProps = state => ({
+  isLogined: state.isAuthentificated
+});
 
-const Login = connect(null, mapDispatcherToProps)(_Login);
+const Login = connect(mapStateToProps, mapDispatcherToProps)(_Login);
 
 export default Login;

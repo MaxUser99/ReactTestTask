@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import {
   Switch,
   Route,
@@ -10,13 +10,9 @@ import Login from "./components/Login";
 import Main from "./components/Main";
 import InfoPage from "./components/InfoPage";
 import Header from "./components/Header";
+import PrivateRoute from "./components/PrivateRoute";
 
-const mapStateToProps = state => ({
-  isLogined: state.isAuthentificated,
-  login:     state.user.login
-});
-
-class _App extends Component {
+class _App extends React.Component {
   componentWillMount() {
     const { location, history } = this.props;
     if (location.pathname === "/") {
@@ -26,22 +22,28 @@ class _App extends Component {
 
   render() {
     const { isLogined, login, history } = this.props;
-    if (isLogined && history.location.pathname === "/login") {
-      return (<Redirect to="/main" />);
-    }
+    console.log(isLogined);
+    console.log(history.location.pathname);
+  // && history.location.pathname === "/login"
+  //   if (isLogined) {
+      // return (<Redirect to="/main" />);
+    // }
 
     return (
       <div>
         <Header login={login || ""} />
         <div className="container">
           <Switch>
-            <Route path="/main/:id" component={InfoPage} />
+            <Route exact path="/main/:id" component={InfoPage} />
+            {/*
             <Route
               path="/main"
               render={() => (isLogined
                 ? <Main />
                 : <Redirect to="/login" />)}
             />
+            */}
+            <PrivateRoute path="/main/" myComponent={Main} />
             <Route path="/login" component={Login} />}/>
           </Switch>
         </div>
@@ -49,6 +51,11 @@ class _App extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  isLogined: state.isAuthentificated,
+  login:     state.user.login
+});
 
 const App = connect(mapStateToProps)(_App);
 

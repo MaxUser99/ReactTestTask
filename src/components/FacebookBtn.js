@@ -13,6 +13,7 @@ class FacebookBtn extends Component {
    * Init FB object and check Facebook Login status
    */
   initializeFacebookLogin = () => {
+    console.log("FB initialized");
     this.FB = window.FB;
   };
 

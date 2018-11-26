@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import { startLoading } from "../reduxStuff/actions";
-import PersonLink from "./PersonLink";
+// import PersonLink from "./PersonLink";
+import List from "./List";
 
 class _Main extends React.Component {
   state = {
@@ -23,17 +24,7 @@ class _Main extends React.Component {
 
   render() {
     const { stringPattern } = this.state;
-    const { data } = this.props;
-    const pageLocation = "/main/";
-    const Links = data
-      .filter(elem => elem.name.toLowerCase().includes(stringPattern))
-      .map((obj, i) => (
-        <PersonLink
-          key={i}
-          pageDestination={`${pageLocation}${i}`}
-          personName={obj.name}
-        />
-      ));
+
     return (
       <div>
         <input
@@ -43,12 +34,35 @@ class _Main extends React.Component {
           id="searchInput"
           placeholder="Enter whom are you looking for..."
         />
-        <ol>
-          {Links}
-        </ol>
+        <List stringPattern={stringPattern} />
       </div>
     );
-  }
+    // const { data } = this.props;
+    // const pageLocation = "/main/";
+    // const Links = data
+    //   .filter(elem => elem.name.toLowerCase().includes(stringPattern))
+    //   .map((obj, i) => (
+    //     <PersonLink
+    //       key={i}
+    //       pageDestination={`${pageLocation}${i}`}
+    //       personName={obj.name}
+    //     />
+    //   ));
+    // return (
+    //   <div>
+    //     <input
+    //       onChange={this.inputChanged}
+    //       type="text"
+    //       className="form-control"
+    //       id="searchInput"
+    //       placeholder="Enter whom are you looking for..."
+    //     />
+    //     <ol>
+    //       {Links}
+    //     </ol>
+    //   </div>
+    // );
+  };
 }
 
 const mapDispatchToProps = dispatch => ({
@@ -56,7 +70,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = state => ({
-  data:        state.data,
+  // data:        state.data,
   dataFetched: state.dataFetched,
   isFetching:  state.isFetching
 });
