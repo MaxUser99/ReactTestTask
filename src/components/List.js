@@ -9,7 +9,8 @@ const list = ({ data, stringPattern }) => {
     .map((obj, i) => (
       <PersonLink
         key={i}
-        pageDestination={`/main/${i}`}
+        // pageDestination={`/main/${i}`}
+        pageDestination={`/${i}`}
         personName={obj.name}
       />
     ));
@@ -17,7 +18,7 @@ const list = ({ data, stringPattern }) => {
 };
 
 const mapStateToProps = (state, ownProps) => ({
-  data: state.data,
+  data:          state.data,
   stringPattern: ownProps.stringPattern
 });
 
