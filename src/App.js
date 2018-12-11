@@ -1,48 +1,77 @@
-import React, { Component } from "react";
+import React from "react";
 import {
   Switch,
-  Route,
-  Redirect
+  Route
 } from "react-router-dom";
 import { connect } from "react-redux";
+import { withRouter } from "react-router";
 
-import Login from "./components/Login";
-import Main from "./components/Main";
-import InfoPage from "./components/InfoPage";
+import Login from "./components/pages/Login";
+import Main from "./components/pages/Main";
+import InfoPage from "./components/pages/InfoPage";
 import Header from "./components/Header";
+import PrivateRoute from "./components/PrivateRoute";
 
-const mapStateToProps = state => ({
-  isLogined: state.isAuthentificated,
-  login:     state.user.login
-});
+class _App extends React.Component {
+  initFbSDK = () => {
+    // appId: '188071835431986',
+    // appId: '2403105399703676',
+    if (!window.FB) {
+      window.fbAsyncInit = function() {
+        window.FB.init({
+          appId:   "188071835431986",
+          cookie:  true,
+          xfbml:   true,
+          version: "v2.8"
+        });
+        const fbInitEvent = new Event("FBObjectReady");
+        document.dispatchEvent(fbInitEvent);
+      };
 
-class _App extends Component {
-  componentWillMount() {
-    const { location, history } = this.props;
-    if (location.pathname === "/") {
-      history.push("/main");
+      (function(d, s, id) {
+        const fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {
+          return;
+        }
+        const js = d.createElement(s);
+        js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, "script", "facebook-jssdk"));
     }
+  };
+
+  initInSDK = () => {
+    (function(id) {
+      if (document.getElementById(id)) {
+        return;
+      }
+      const ljs = document.getElementsByTagName("script")[0];
+      const js = document.createElement("script");
+      js.id = id;
+
+      js.src = "//platform.linkedin.com/in.js";
+      js.text = "api_key: 771023rs10ey18";
+      ljs.parentNode.insertBefore(js, ljs);
+    }("linkedin-sdk"));
+  };
+
+  componentWillMount() {
+    // sdks initializing
+    this.initFbSDK();
+    this.initInSDK();
   }
 
   render() {
-    const { isLogined, login, history } = this.props;
-    if (isLogined && history.location.pathname === "/login") {
-      return (<Redirect to="/main" />);
-    }
-
+    const { login } = this.props;
     return (
       <div>
         <Header login={login || ""} />
         <div className="container">
           <Switch>
-            <Route path="/main/:id" component={InfoPage} />
-            <Route
-              path="/main"
-              render={() => (isLogined
-                ? <Main />
-                : <Redirect to="/login" />)}
-            />
+            <PrivateRoute exact path="/" myComponent={Main} />
             <Route path="/login" component={Login} />}/>
+            <PrivateRoute path="/:id" myComponent={InfoPage} />
           </Switch>
         </div>
       </div>
@@ -50,6 +79,11 @@ class _App extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  isLogined: state.isAuthentificated,
+  login:     state.user.login
+});
+
 const App = connect(mapStateToProps)(_App);
 
-export default App;
+export default withRouter(App);

@@ -1,9 +1,23 @@
 import React from "react";
+import { connect } from "react-redux";
 
-function Vehicles({ vehicles }) {
-  const content = vehicles
-    .map((obj, i) => <p key={i}>vehicle: {obj.name}, model = {obj.model}</p>);
-  return <div>{content}</div>;
-}
+const Vehicles = ({ vehicles, isURL }) => {
+  let content;
+  if (isURL(vehicles)) {
+    content = "LOADING...";
+  } else {
+    content = (
+      <ul>
+        {vehicles.map((obj, i) => <li key={i}>{obj}</li>)}
+      </ul>
+    );
+  }
+  return <div>Vehicles:{content}</div>;
+};
 
-export default Vehicles;
+const mapStateToProps = (state, ownProps) => ({
+  vehicles: state.data[ownProps.id].vehicles,
+  isURL:    ownProps.isURL
+});
+
+export default connect(mapStateToProps)(Vehicles);

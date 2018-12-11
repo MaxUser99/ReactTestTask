@@ -23,6 +23,19 @@ const mainReducer = (state = initialState, action) => {
       return {
         ...state, isFetching:  false, dataFetched: true, fetchError:  action.payload
       };
+    case constants.FETCH_PROPS:
+      return state;
+    case constants.SET_PROP:
+      const { payload } = action;
+      const persons = state.data.slice();
+      const person = persons.find(e => e.name === payload.personName);
+      const index = persons.indexOf(person);
+      // if (!person.hasOwnProperty(payload.prop)) {
+      //   return state;
+      // }
+      person[payload.prop] = payload.val;
+      persons[index] = person;
+      return { ...state, data: persons };
     default:
       return state;
   }
